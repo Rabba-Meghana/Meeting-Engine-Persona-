@@ -1,58 +1,42 @@
 # Meeting Persona Engine
 
-> Behavioral DNA from conversation data — powered by Recall.ai + Groq
+Behavioral DNA from conversation data. Drop in meeting transcripts — get a deep profile of how each person thinks, decides, and reacts.
 
-A real-time intelligence layer that ingests meeting transcripts and builds deep behavioral profiles of every person who speaks. Not a summarizer. A model of how humans think and communicate.
+## What it does
 
-## What It Does
+- Extracts behavioral signals from how people actually speak in meetings
+- Scores directness, empathy, risk sensitivity, urgency, strategic thinking, collaboration — from real language patterns
+- Predicts how a specific person will react to a specific proposal before you walk in
+- Same proposal through two people produces completely different outputs — derived from their transcripts, zero hardcoded logic
 
-After analyzing meetings with the same people, you get:
+## How it works
 
-- **Communication DNA** — are they a challenger, a validator, a strategist?
-- **Behavioral Radar** — directness, empathy, urgency, risk tolerance, collaboration, strategic thinking
-- **Influence Map** — who actually drives decisions vs who just talks
-- **Response Predictor** — paste any proposal and get their likely reaction, first question, and objection before you walk in
-- **Pre-meeting Brief** — auto-generated playbook for every person you'll meet
+1. Transcripts are split by speaker
+2. A feature extraction engine scores each person on 12 behavioral dimensions (question rate, action density, hedge rate, empathy signals, data orientation, and more)
+3. Radar scores are computed from measured rates — not invented by an LLM
+4. The prediction engine scores the proposal against each person's measured profile
+5. Groq narrates the output in natural language
 
 ## Stack
 
-- **Next.js 15** + TypeScript — App Router, API routes
-- **Recall.ai API** — meeting bot infrastructure, transcript extraction
-- **Groq (LLaMA 3.3 70B)** — ultra-low latency behavioral analysis
-- **Recharts** — radar charts, influence visualization
-- **Tailwind CSS** — dark theme UI
+- Next.js 15, TypeScript
+- Groq (llama-3.1-8b-instant for narration)
+- Recharts for radar and bar charts
+- No database — transcript data drives everything
 
-## Setup
+## Run locally
 
 ```bash
-git clone https://github.com/Rabba-Meghana/Meeting-Persona-Engine
-cd Meeting-Persona-Engine
+git clone https://github.com/Rabba-Meghana/Meeting-Engine-Persona-
+cd Meeting-Engine-Persona-
 npm install
-```
-
-Create `.env.local`:
-```
-GROQ_API_KEY=your_groq_key
-RECALL_API_KEY=your_recall_key
-```
-
-```bash
+cp .env.example .env.local
+# add your GROQ_API_KEY to .env.local
 npm run dev
 ```
 
-## Deploy to Vercel
+Open [http://localhost:3000](http://localhost:3000)
 
-1. Push to GitHub
-2. Import at vercel.com
-3. Add `GROQ_API_KEY` in Environment Variables
-4. Deploy
+## Built by
 
-## How It Works
-
-Recall.ai's bot joins any Zoom/Meet/Teams call and extracts the transcript in real-time. This engine ingests those transcripts across multiple meetings, extracts every utterance per person, and runs them through Groq's LLaMA 3.3 70B to build behavioral profiles — communication style, decision patterns, stress responses, influence dynamics.
-
-The insight: 99% of the context you need to work effectively with someone is never written down. It's spoken.
-
----
-
-*Built on Recall.ai infrastructure — the API layer that makes meeting intelligence possible.*
+Meghana Rabba — [linkedin.com/in/meghanarabba](https://linkedin.com/in/meghanarabba)
