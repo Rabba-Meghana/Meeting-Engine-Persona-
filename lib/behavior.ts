@@ -267,7 +267,7 @@ export function buildDeterministicPrediction(profile: BehaviorProfile, proposal:
     ['execution risk', 'concrete tradeoff', 'clear success metric']
 
   const keyPhrasesToAvoid =
-    r.directness > 65 ? ["we'll figure it out", 'this is probably fine', 'let's see how it goes'] :
+    r.directness > 65 ? ["we will figure it out", "this is probably fine", "no clear plan yet"] :
     r.empathy > 68 ? ['just a process change', "people will adapt", 'efficiency first'] :
     ["we'll figure it out later", 'this should be fine']
 
