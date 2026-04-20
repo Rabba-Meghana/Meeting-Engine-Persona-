@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
-import { buildBehaviorProfile, buildDeterministicPrediction } from '@/lib/behavior'
+import { buildBehaviorProfile, buildDeterministicPrediction, BehaviorProfile } from '@/lib/behavior'
+import { buildProfileFromLines } from '@/lib/behaviorFromTranscript'
 
 function getGroq() {
   const apiKey = process.env.GROQ_API_KEY
@@ -18,39 +19,37 @@ function extractJson(text: string) {
   }
 }
 
-function buildFallbackProfile(profile: NonNullable<ReturnType<typeof buildBehaviorProfile>>) {
+function buildFallbackProfile(profile: BehaviorProfile) {
   const r = profile.radarScores
   const n = profile.personName
   return {
     communicationStyle: {
       label: r.directness > 70 ? 'Direct and decisive' : r.empathy > 70 ? 'Empathetic and collaborative' : 'Measured and analytical',
       description: r.directness > 70
-        ? `${n} communicates with clarity and brevity, cutting quickly to what matters. They push for concrete tradeoffs over exploratory discussion.`
+        ? `${n} communicates with clarity and brevity, cutting quickly to what matters.`
         : r.empathy > 70
-        ? `${n} communicates with warmth and attention to how decisions affect people. They build consensus before committing.`
-        : `${n} brings precision to conversations, asking sharp questions and anchoring discussion in evidence.`,
+        ? `${n} communicates with warmth and attention to how decisions affect people.`
+        : `${n} brings precision to conversations, asking sharp questions and anchoring in evidence.`,
     },
     decisionPattern: {
       label: r.strategicThinking > 70 ? 'Evidence-driven strategist' : r.urgency > 68 ? 'Action-oriented executor' : 'Pragmatic and grounded',
       description: r.strategicThinking > 70
-        ? `Decisions are anchored in data, tradeoffs, and longer-horizon thinking. They connect near-term choices to strategic outcomes.`
-        : r.urgency > 68
-        ? `They prefer to decide fast and adjust rather than wait for perfect information. Speed and momentum matter to them.`
-        : `They weigh operational reality carefully and prefer decisions that can be executed cleanly over theoretically optimal ones.`,
+        ? 'Decisions are anchored in data, tradeoffs, and longer-horizon thinking.'
+        : 'They prefer to decide fast and adjust rather than wait for perfect information.',
     },
     stressResponse: {
       label: r.directness > 68 ? 'Focused and sharper' : r.collaboration > 68 ? 'Steadying presence' : 'Methodical and deliberate',
       description: r.directness > 68
-        ? `Under pressure, they narrow focus and become more direct. Expect shorter turns, harder questions, and a faster decision forcing function.`
-        : `Under pressure they work to stabilize the room, gather information, and ensure the team has what it needs before acting.`,
+        ? 'Under pressure they narrow focus and become more direct. Expect harder questions and faster forcing functions.'
+        : 'Under pressure they work to stabilize the room and ensure the team has what it needs before acting.',
     },
     influenceMethod: {
       label: r.directness > 68 ? 'Sets the decision frame' : r.empathy > 68 ? 'Builds trust and alignment' : 'Shapes thinking through evidence',
       description: r.directness > 68
-        ? `They influence by defining what the question actually is and what standard a good answer must meet. Others respond to the frame they set.`
+        ? 'They influence by defining what the question is and what standard a good answer must meet.'
         : r.empathy > 68
-        ? `They influence through genuine investment in people and outcomes. Trust is their primary currency in the room.`
-        : `They shape decisions by surfacing data and precedent that reframe the options available. Evidence is their primary tool.`,
+        ? 'They influence through genuine investment in people and outcomes. Trust is their primary currency.'
+        : 'They shape decisions by surfacing data and precedent that reframe the options available.',
     },
     radarScores: r,
     talkTimePercent: profile.talkTimePercent,
@@ -64,7 +63,7 @@ function buildFallbackProfile(profile: NonNullable<ReturnType<typeof buildBehavi
   }
 }
 
-async function narrateProfile(profile: NonNullable<ReturnType<typeof buildBehaviorProfile>>) {
+async function narrateProfile(profile: BehaviorProfile) {
   const groq = getGroq()
   if (!groq) return buildFallbackProfile(profile)
 
@@ -91,7 +90,6 @@ Write raw JSON only (no markdown) with this exact shape:
     })
     const text = response.choices?.[0]?.message?.content || ''
     const parsed = extractJson(text)
-    // Always use measured values — never let model override
     parsed.radarScores = profile.radarScores
     parsed.talkTimePercent = profile.talkTimePercent
     parsed.interruptionTendency = profile.interruptionTendency
@@ -107,13 +105,17 @@ Write raw JSON only (no markdown) with this exact shape:
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { personName, mode, proposal = '' } = body
+    const { personName, mode, proposal = '', customLines } = body
 
     if (!personName || !mode) {
       return NextResponse.json({ error: 'Missing personName or mode' }, { status: 400 })
     }
 
-    const profile = buildBehaviorProfile(personName)
+    // Use custom transcript lines if provided, otherwise fall back to mock data
+    const profile = customLines && customLines.length > 0
+      ? buildProfileFromLines(personName, customLines)
+      : buildBehaviorProfile(personName)
+
     if (!profile) {
       return NextResponse.json({ error: 'No transcript data found for this person' }, { status: 404 })
     }
@@ -124,7 +126,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (mode === 'predict') {
-      // Deterministic first — no LLM override of behavior
       const prediction = buildDeterministicPrediction(profile, proposal)
       return NextResponse.json({ prediction })
     }
