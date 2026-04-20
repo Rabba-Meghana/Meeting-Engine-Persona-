@@ -2,7 +2,7 @@ export interface Meeting {
   id: string
   title: string
   date: string
-  duration: number // minutes
+  duration: number
   participants: string[]
   transcript: { speaker: string; text: string; timestamp: number }[]
 }
@@ -18,7 +18,8 @@ export const PEOPLE: Person[] = [
   { name: 'David Gu', avatar: 'DG', role: 'Co-founder & CEO', meetingCount: 5 },
   { name: 'Amanda Zhu', avatar: 'AZ', role: 'Co-founder & CTO', meetingCount: 5 },
   { name: 'Marcus Webb', avatar: 'MW', role: 'Head of Sales', meetingCount: 4 },
-  { name: 'Priya Nair', avatar: 'PN', role: 'Lead Engineer', meetingCount: 3 },
+  { name: 'Priya Nair', avatar: 'PN', role: 'Lead Engineer', meetingCount: 4 },
+  { name: 'Elliot Chen', avatar: 'EC', role: 'Head of Hiring', meetingCount: 4 },
 ]
 
 export const MEETINGS: Meeting[] = [
@@ -29,7 +30,7 @@ export const MEETINGS: Meeting[] = [
     duration: 47,
     participants: ['David Gu', 'Amanda Zhu', 'Marcus Webb', 'Priya Nair'],
     transcript: [
-      { speaker: 'David Gu', text: "Okay so I've been thinking about this a lot. The core question is — do we ship the webhooks feature in Q3 or do we push it to Q4? I think we're trying to do too much.", timestamp: 12 },
+      { speaker: 'David Gu', text: "Okay so I've been thinking about this a lot. The core question is: do we ship the webhooks feature in Q3 or do we push it to Q4? I think we're trying to do too much.", timestamp: 12 },
       { speaker: 'Amanda Zhu', text: "The webhooks refactor alone is going to take three sprints minimum. If we commit to Q3, we're setting ourselves up to cut corners. What's the actual customer pressure here?", timestamp: 45 },
       { speaker: 'Marcus Webb', text: "I've had four enterprise calls this week where webhooks came up. Twilio is blocking us from two deals specifically because of it. I'm not saying it's easy — I'm saying it's urgent.", timestamp: 78 },
       { speaker: 'Priya Nair', text: "Marcus is right that it's coming up a lot. I think we can scope it differently — ship a minimal webhooks v1 that handles the Twilio blocker specifically, and defer the full refactor.", timestamp: 112 },
@@ -84,21 +85,25 @@ export const MEETINGS: Meeting[] = [
     title: 'Hiring Review — Senior Eng Candidates',
     date: '2024-04-08',
     duration: 42,
-    participants: ['David Gu', 'Amanda Zhu', 'Priya Nair'],
+    participants: ['David Gu', 'Amanda Zhu', 'Priya Nair', 'Elliot Chen'],
     transcript: [
-      { speaker: 'Amanda Zhu', text: "We have three finalists. I want to go through them quickly because I think we're close on one of them but I have a real concern on the front-runner.", timestamp: 10 },
-      { speaker: 'David Gu', text: "Tell me the concern first.", timestamp: 38 },
-      { speaker: 'Amanda Zhu', text: "Candidate A — technically exceptional, best systems design I've seen in this process. But in the interview debrief he said he prefers working 'heads down' and finds customer support rotations distracting. That's a red flag for me.", timestamp: 55 },
-      { speaker: 'Priya Nair', text: "I noticed that too. He also didn't ask a single question about how the team operates. Which surprised me — usually the strongest candidates are the most curious about the environment.", timestamp: 95 },
-      { speaker: 'David Gu', text: "That's disqualifying for me. I don't care how good the systems design is — we're at 20 people, everyone talks to customers. That's not going to change for a long time and I don't want to build a culture that accommodates it.", timestamp: 125 },
-      { speaker: 'Amanda Zhu', text: "Agreed. So Candidate B — solid, not exceptional. She's worked in audio/video infrastructure before which is a real plus. She asked great questions about our latency targets.", timestamp: 155 },
-      { speaker: 'Priya Nair', text: "She'd ramp fast because of the AV background. My concern is growth ceiling — I'm not sure she has the ambition to grow into a staff role in two years.", timestamp: 188 },
-      { speaker: 'David Gu', text: "What's your gut on Candidate C?", timestamp: 215 },
-      { speaker: 'Amanda Zhu', text: "Candidate C is my pick. Less experienced but the sharpest thinker. In the take-home, she found a bug we didn't even know existed in our mock infrastructure. That's the kind of thing I can't train.", timestamp: 232 },
-      { speaker: 'David Gu', text: "She found a bug we didn't know about. Done. Make the offer today. Don't let her sit on this for a week — candidates at her level have options.", timestamp: 268 },
-      { speaker: 'Priya Nair', text: "I'll reach out this afternoon. Do we have flexibility on the offer package if she counters?", timestamp: 292 },
-      { speaker: 'David Gu', text: "Yes. Amanda, what's our ceiling on comp for this role?", timestamp: 315 },
-      { speaker: 'Amanda Zhu', text: "We have headroom. Priya — go to 10% above our initial offer if she counters, but don't lead with it. See what she actually needs.", timestamp: 330 },
+      { speaker: 'Elliot Chen', text: "Before we go into candidates — I want to flag something structural. Our backend loop is running 5 rounds right now. I've tracked it: we lose 40% of candidates between round 3 and round 5. That's not a talent problem, it's a process problem.", timestamp: 8 },
+      { speaker: 'Amanda Zhu', text: "We have three finalists from the current pool. I want to go through them quickly because I think we're close on one of them but I have a real concern on the front-runner.", timestamp: 35 },
+      { speaker: 'David Gu', text: "Tell me the concern first.", timestamp: 62 },
+      { speaker: 'Amanda Zhu', text: "Candidate A is technically exceptional, best systems design I've seen in this process. But in the interview debrief he said he prefers working heads-down and finds customer support rotations distracting. That's a red flag for me.", timestamp: 78 },
+      { speaker: 'Priya Nair', text: "I noticed that too. He also didn't ask a single question about how the team operates. Which surprised me — usually the strongest candidates are the most curious about the environment.", timestamp: 118 },
+      { speaker: 'Elliot Chen', text: "That curiosity signal is one I weight heavily. Candidates who don't ask about the team dynamic are either overconfident or not actually evaluating us — both are warning signs at this stage.", timestamp: 138 },
+      { speaker: 'David Gu', text: "That's disqualifying for me. I don't care how good the systems design is — we're at 20 people, everyone talks to customers. I don't want to build a culture that accommodates the opposite.", timestamp: 172 },
+      { speaker: 'Amanda Zhu', text: "So Candidate B — solid, not exceptional. She's worked in audio/video infrastructure before which is a real plus. She asked great questions about our latency targets.", timestamp: 205 },
+      { speaker: 'Priya Nair', text: "She'd ramp fast because of the AV background. My concern is growth ceiling — I'm not sure she has the ambition to grow into a staff role in two years.", timestamp: 238 },
+      { speaker: 'Elliot Chen', text: "I had a deeper conversation with her after the interview. She's interviewing at two other companies with clearer promotion ladders than ours. If we want her, we need to give her something concrete about the growth trajectory — not just vibes.", timestamp: 260 },
+      { speaker: 'David Gu', text: "What's your gut on Candidate C?", timestamp: 298 },
+      { speaker: 'Amanda Zhu', text: "Candidate C is my pick. Less experienced but the sharpest thinker. In the take-home, she found a bug we didn't even know existed in our mock infrastructure. That's the kind of thing I can't train.", timestamp: 315 },
+      { speaker: 'Elliot Chen', text: "She's also the only one who asked about our onboarding process. That tells me she's thinking about how to succeed here, not just whether to accept. That's a really healthy signal.", timestamp: 348 },
+      { speaker: 'David Gu', text: "She found a bug we didn't know about. Done. Make the offer today. Don't let her sit on this for a week — candidates at her level have options.", timestamp: 378 },
+      { speaker: 'Priya Nair', text: "I'll reach out this afternoon. Do we have flexibility on comp if she counters?", timestamp: 398 },
+      { speaker: 'Elliot Chen', text: "I'd suggest we lead with the comp range upfront and give her 48 hours, not a week. Leaving candidates in ambiguity too long sends the wrong signal about how we operate.", timestamp: 415 },
+      { speaker: 'Amanda Zhu', text: "We have headroom. Priya — go to 10% above our initial offer if she counters, but don't lead with it. See what she actually needs.", timestamp: 448 },
     ]
   },
   {
@@ -123,5 +128,48 @@ export const MEETINGS: Meeting[] = [
       { speaker: 'Marcus Webb', text: "Meaningfully. I'd estimate we're losing 20-30% of deals purely to procurement delay. Fixing the technical win speed changes everything.", timestamp: 315 },
       { speaker: 'David Gu', text: "Priya, the sandbox is now the top priority after webhooks ships. Amanda — please make sure she has cover to focus on it.", timestamp: 340 },
     ]
-  }
+  },
+  {
+    id: 'm6',
+    title: 'Hiring Strategy — Q2 Pipeline Review',
+    date: '2024-04-18',
+    duration: 44,
+    participants: ['Elliot Chen', 'David Gu', 'Amanda Zhu'],
+    transcript: [
+      { speaker: 'Elliot Chen', text: "I've been tracking our pipeline data for the last 90 days and I want to share what I'm seeing, because I think we have a structural issue that's costing us good candidates before they even get to final round.", timestamp: 10 },
+      { speaker: 'David Gu', text: "Go ahead.", timestamp: 38 },
+      { speaker: 'Elliot Chen', text: "Our average time from application to offer is 34 days. The market standard for eng candidates at this level is 14 to 21 days. We're double the average. In a competitive hiring market, that's losing us candidates to faster-moving companies.", timestamp: 52 },
+      { speaker: 'Amanda Zhu', text: "Is the bottleneck the technical round or the debrief process?", timestamp: 92 },
+      { speaker: 'Elliot Chen', text: "It's the debrief. We're scheduling them 5 to 7 days after the final interview. By the time we make the decision, candidates have already mentally moved on or received other offers. I want to propose same-day or next-day debriefs going forward.", timestamp: 108 },
+      { speaker: 'David Gu', text: "That requires the interview panel to be available same day. Can we actually commit to that?", timestamp: 155 },
+      { speaker: 'Elliot Chen', text: "I've talked to everyone on the typical panels. If I schedule interviews on Tuesdays and Thursdays, I can consistently get debrief slots same day at 5pm. It's a coordination problem, not a capacity problem.", timestamp: 172 },
+      { speaker: 'Amanda Zhu', text: "That actually works for me. My concern has always been that rushed debriefs lead to poor decisions — but if everyone's fresh from the interview that day, the quality actually improves.", timestamp: 215 },
+      { speaker: 'Elliot Chen', text: "Exactly. And one more thing — I want to start sending candidates a brief personal culture note within 24 hours of their first interview. Not templated. I've done this at two previous companies and it measurably increases acceptance rates.", timestamp: 240 },
+      { speaker: 'David Gu', text: "What does measurably mean? Do you have the data?", timestamp: 278 },
+      { speaker: 'Elliot Chen', text: "At my last company, acceptance rate went from 62% to 81% after we started the practice. I tracked it over 6 months and 40 offers. Candidates who received a personal note were 3x more likely to respond within 24 hours.", timestamp: 295 },
+      { speaker: 'David Gu', text: "That's a real number. Okay. Let's run it. Elliot, you own the process change. Amanda, I need you to enforce the debrief timing from your side.", timestamp: 340 },
+      { speaker: 'Amanda Zhu', text: "Done. Elliot — let's set up a shared calendar block so I can protect Tuesday and Thursday afternoons for hiring work.", timestamp: 362 },
+      { speaker: 'Elliot Chen', text: "Perfect. I'll also put together a one-page summary of the candidate pipeline health each week so we're not going into these conversations cold. Transparency makes better decisions.", timestamp: 378 },
+    ]
+  },
+  {
+    id: 'm7',
+    title: 'Candidate Experience Debrief',
+    date: '2024-04-22',
+    duration: 28,
+    participants: ['Elliot Chen', 'Priya Nair', 'Amanda Zhu'],
+    transcript: [
+      { speaker: 'Elliot Chen', text: "I want to share some feedback we've been getting from candidates post-process — both accepted and declined. I think there's signal here worth understanding, and I'd rather find it now than after we lose a few more good people.", timestamp: 8 },
+      { speaker: 'Priya Nair', text: "I'd love to hear the declines more than the accepts. What are we missing?", timestamp: 35 },
+      { speaker: 'Elliot Chen', text: "Three themes in the decline feedback: one — candidates felt the technical round was intense but didn't understand how it mapped to the actual job. Two — they didn't get a clear sense of growth trajectory. Three — the process felt impersonal until the offer stage.", timestamp: 52 },
+      { speaker: 'Amanda Zhu', text: "The first one is actionable. We can give candidates an explicit brief before the technical round explaining what we're testing and why it reflects real work.", timestamp: 92 },
+      { speaker: 'Elliot Chen', text: "That's exactly what I want to propose. It also reduces anxiety and you get cleaner signal — people perform better when they understand the context. It's fairer to the candidate and better data for us.", timestamp: 115 },
+      { speaker: 'Priya Nair', text: "I can write the brief for the engineering round. I know what we actually care about. It'll take me two hours.", timestamp: 145 },
+      { speaker: 'Elliot Chen', text: "That would be incredible, Priya. And on the growth trajectory issue — I've drafted a one-page career path document. Can I get your review on the engineering ladder section?", timestamp: 162 },
+      { speaker: 'Amanda Zhu', text: "Send it to me by end of week. I want to make sure what we're promising is what we can actually deliver.", timestamp: 195 },
+      { speaker: 'Elliot Chen', text: "Absolutely. The last thing I want to do is oversell the experience and create a mismatch. Trust between candidate and company starts before day one.", timestamp: 212 },
+      { speaker: 'Priya Nair', text: "That's actually a really good framing. The onboarding experience starts the moment someone applies, not when they walk in the door.", timestamp: 238 },
+      { speaker: 'Elliot Chen', text: "Exactly. And I think if we get this right, we'll see it in retention numbers 12 months out. People who felt respected in the hiring process tend to stay longer. I'll start tracking that now so we have the data in a year.", timestamp: 258 },
+    ]
+  },
 ]

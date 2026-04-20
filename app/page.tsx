@@ -78,7 +78,9 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ personName: person.name, mode: 'profile' }),
       })
-      const d = await r.json()
+      const raw = await r.text()
+      const d = raw ? JSON.parse(raw) : {}
+      if (!r.ok) throw new Error(d.error || 'Failed to load profile')
       setProfile(d.profile)
     } catch (e) {
       console.error(e)
@@ -102,7 +104,9 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ personName: selectedPerson.name, mode: 'predict', proposal }),
       })
-      const d = await r.json()
+      const raw = await r.text()
+      const d = raw ? JSON.parse(raw) : {}
+      if (!r.ok) throw new Error(d.error || 'Failed to predict response')
       setPrediction(d.prediction)
     } catch (e) {
       console.error(e)
